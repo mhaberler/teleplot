@@ -9,17 +9,31 @@ var express = require('express');
 var app = express();
 var expressWs = require('express-ws')(app);
 
+var argv = require('minimist-lite')(process.argv.slice(2));
+var mdns = require('mdns-js');
+
+if ('mdns' in argv) {
+    console.log('advertising _teleplot._udp service on port 47269');
+    var service = mdns.createAdvertisement(mdns.udp('_teleplot'), UDP_PORT, {
+        name: 'Teleplot server',
+        txt: {
+            txtvers: '1'
+        }
+    });
+    service.start();
+}
+
 //Setup file server
 app.use(express.static(__dirname + '/www'))
 
 //Setup websocket server
-app.ws('/', (ws, req)=>{
-    ws.on('message', function(msgStr) {
+app.ws('/', (ws, req) => {
+    ws.on('message', function (msgStr) {
         try {
             let msg = JSON.parse(msgStr);
             udpServer.send(msg.cmd, CMD_UDP_PORT);
         }
-        catch(e){}
+        catch (e) { }
     });
 });
 app.listen(HTTP_WS_PORT);
@@ -33,17 +47,16 @@ udpServer.bind(UDP_PORT);
 let groupedUpPacket = "";
 
 // Relay UDP packets to Websocket
-udpServer.on('message',function(msg,info){
+udpServer.on('message', function (msg, info) {
     groupedUpPacket += ("\n" + msg.toString());
 });
 
 
 // every requestDelay ms, we send the packets (no need to send them at a higher frequency as it will just slow teleplot)
-setInterval(()=>{
-    if(groupedUpPacket != "")
-    {
-        expressWs.getWss().clients.forEach((client)=>{
-            client.send(JSON.stringify({data: groupedUpPacket, fromSerial:false, timestamp: new Date().getTime()}), { binary: false });
+setInterval(() => {
+    if (groupedUpPacket != "") {
+        expressWs.getWss().clients.forEach((client) => {
+            client.send(JSON.stringify({ data: groupedUpPacket, fromSerial: false, timestamp: new Date().getTime() }), { binary: false });
         });
     }
 
