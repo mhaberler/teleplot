@@ -1,6 +1,6 @@
 {
   "name": "teleplot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "main.js",
   "bin": "main.js",
@@ -12,15 +12,18 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "dotenv-defaults": "^5.0.2",
     "express": "^4.17.1",
     "express-ws": "^5.0.2",
     "mdns-js": "^1.0.3",
-    "minimist-lite": "^2.2.1"
   },
   "pkg": {
     "scripts": "main.js",
     "assets": "www/**",
-    "targets": ["node14-windows-x64", "node14-linux-x64" ],
+    "targets": [
+      "node14-windows-x64",
+      "node14-linux-x64"
+    ],
     "outputPath": "build"
   }
 }
