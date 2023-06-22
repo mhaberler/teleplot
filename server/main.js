@@ -17,6 +17,7 @@ var expressWs = require('express-ws')(app);
 var wsclientApp = express();
 require('express-ws')(wsclientApp);
 
+
 // packets are being grouped up in this string and sent all together later on ( we have just added a line break between each )
 let groupedUpPacket = "";
 var service = null;
