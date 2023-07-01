@@ -1,0 +1,34 @@
+{
+  "name": "teleplot-js",
+  "version": "1.0.0",
+  "description": "send teleplot telemetry via websocket",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mhaberler/teleplot.git"
+  },
+  "keywords": [
+    "node",
+    "browser",
+    "teleplot",
+    "telemetry"
+  ],
+  "author": "Michael Haberler",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mhaberler/teleplot/issues"
+  },
+  "homepage": "https://github.com/mhaberler/teleplot#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "babel-preset-es2015": "^6.24.1",
+    "reconnecting-websocket": "^4.4.0"
+  }
+}
