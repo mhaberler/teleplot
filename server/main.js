@@ -1,12 +1,15 @@
 const requestDelay = 50;// every requestDelay milliseconds, we send a websocket packet 
 
-const myEnv = require(`dotenv-defaults`).config({
+//const myEnv = 
+require(`dotenv-defaults`).config({
     MDNS: 1,
     UDP_PORT: 47269,
     CMD_UDP_PORT: 47268,
     HTTP_WS_PORT: 8080,
     HTTP_WSCLIENT_PORT: 8081
 });
+console.log(process.env.MDNS)
+console.log(process.env.HTTP_WS_PORT)
 
 const udp = require('dgram');
 var mdns = require('mdns-js');
