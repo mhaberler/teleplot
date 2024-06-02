@@ -17,19 +17,19 @@ if (vscode) {
     app.connections.push(conn);
 }
 else {
-    if (use_mqtt) {
-        let conn = new ConnectionTeleplotMQTT();
-        let addr = "mqtt-test.mah.priv.at"; // window.location.hostname;
-        let port = 1443; // window.location.port;
-        conn.connect(addr, port);
-        app.connections.push(conn);
-    } else {
-        let conn = new ConnectionTeleplotWebsocket();
-        let addr = window.location.hostname;
-        let port = window.location.port;
-        conn.connect(addr, port);
-        app.connections.push(conn);
-    }
+    // if (use_mqtt) {
+    //     let conn = new ConnectionTeleplotMQTT();
+    //     let addr = "mqtt-test.mah.priv.at"; // window.location.hostname;
+    //     let port = 1443; // window.location.port;
+    //     conn.connect(addr, port);
+    //     app.connections.push(conn);
+    // } else {
+    //     let conn = new ConnectionTeleplotWebsocket();
+    //     let addr = window.location.hostname;
+    //     let port = window.location.port;
+    //     conn.connect(addr, port);
+    //     app.connections.push(conn);
+    // }
 
     // Parse url params
     let params = new URLSearchParams(window.location.search);
