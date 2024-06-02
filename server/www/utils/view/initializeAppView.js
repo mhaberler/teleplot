@@ -200,12 +200,17 @@ function initializeAppView()
                 onMouseDownOnResizeButton_(event, widget);                
             },
             createConnection: function(address_=undefined, port_=undefined){
-                let conn = new ConnectionTeleplotWebsocket();
+                let conn = null;
                 let addr = address_ || this.newConnectionAddress;
                 let port = port_ || 8080;
                 if(addr.includes(":")) {
                     port = parseInt(addr.split(":")[1]);
                     addr = addr.split(":")[0];
+                }
+                if (use_mqtt) {
+                    conn = new ConnectionTeleplotMQTT();                   
+                } else {
+                    conn = new ConnectionTeleplotWebsocket();
                 }
                 conn.connect(addr, port);
                 this.connections.push(conn);

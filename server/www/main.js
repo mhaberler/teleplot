@@ -6,7 +6,6 @@ if ("acquireVsCodeApi" in window) vscode = acquireVsCodeApi();
 var app = initializeAppView();
 var ansi_coloring = new AnsiUp();
 
-let use_mqtt = true;
 
 //Init refresh rate
 setInterval(updateView, 1000 / widgetFPS);

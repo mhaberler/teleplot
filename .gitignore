@@ -1,3 +1,5 @@
 server/build
 server/node_modules
 PLAN.md
+.vscode/launch.json
+untracked

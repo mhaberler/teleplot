@@ -43,6 +43,7 @@ class ConnectionTeleplotMQTT extends Connection{
         })
         this.client.on('connect', () => {
             console.log('MQTT client connected: ' + this.client_id);
+            this.client.subscribe("teleplot");
             this.udp.connected = true;
             this.connected = true;
             this.sendServerCommand({ cmd: "listSerialPorts"});
@@ -57,6 +58,9 @@ class ConnectionTeleplotMQTT extends Connection{
             //     this.connect(this.address, this.port);
             // }, 2000);
         });
+
+        //             client.send(JSON.stringify({data: groupedUpPacket, fromSerial:false, timestamp: new Date().getTime()}), { binary: false });
+
         this.client.on('message', (topic, message, packet) => {
             let msg = JSON.parse(message.toString());
             if("id" in msg){
@@ -76,6 +80,7 @@ class ConnectionTeleplotMQTT extends Connection{
 
     disconnect(){
         if(this.client){
+            this.client.unsubscribe("teleplot");
             this.client.end();
             this.client = null;
         }
