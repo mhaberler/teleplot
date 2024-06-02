@@ -34,6 +34,12 @@ else {
     // Parse url params
     let params = new URLSearchParams(window.location.search);
 
+
+    console.log(`params:`)
+    for (const [key, value] of params) {
+        console.log(`${key}:${key}`)
+    }
+
     // Open layout from url
     let layout = params.get("layout")
     if (layout) {
