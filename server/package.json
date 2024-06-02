@@ -13,7 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
-    "express-ws": "^5.0.2"
+    "express-ws": "^5.0.2",
+    "mqtt": "^5.7.0"
   },
   "pkg": {
     "scripts": "main.js",
