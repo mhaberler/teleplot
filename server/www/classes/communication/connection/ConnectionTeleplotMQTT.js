@@ -1,7 +1,7 @@
-class ConnectionTeleplotMQTT extends Connection{
-    constructor(){
+class ConnectionTeleplotMQTT extends Connection {
+    constructor() {
         super();
-        this.name=""
+        this.name = ""
         this.type = "teleplot-MQTT";
         this.inputs = [];
         this.client_id = 'teleplot_' + Math.random().toString(16).substring(2, 8)
@@ -12,10 +12,15 @@ class ConnectionTeleplotMQTT extends Connection{
         this.udp.address = "";
         this.udp.port = UDPport;
         this.inputs.push(this.udp);
+
+        this.mqtt = new DataInputMQTT(this, "MQTT");
+        // this.udp.address = "";
+        // this.udp.port = UDPport;
+        this.inputs.push(this.mqtt);
     }
 
-    connect(_address, _port){
-        this.name = _address+":"+_port;
+    connect(_address, _port) {
+        this.name = _address + ":" + _port;
         this.address = _address;
         this.port = _port;
         this.udp.address = this.address;
@@ -44,14 +49,15 @@ class ConnectionTeleplotMQTT extends Connection{
         this.client.on('connect', () => {
             console.log('MQTT client connected: ' + this.client_id);
             this.client.subscribe("teleplot");
+            this.client.subscribe("teleplotjs");
             this.udp.connected = true;
             this.connected = true;
-            this.sendServerCommand({ cmd: "listSerialPorts"});
+            this.sendServerCommand({ cmd: "listSerialPorts" });
         });
         this.client.on('close', () => {
             this.udp.connected = false;
             this.connected = false;
-            for(let input of this.inputs){
+            for (let input of this.inputs) {
                 input.disconnect();
             }
             // setTimeout(()=>{
@@ -63,41 +69,57 @@ class ConnectionTeleplotMQTT extends Connection{
 
         this.client.on('message', (topic, message, packet) => {
             let msg = JSON.parse(message.toString());
-            if("id" in msg){
-                for(let input of this.inputs){
-                    if(input.id == msg.id){
-                        input.onMessage(msg);
-                        break;
+            if (topic === 'teleplot') {
+                if ("id" in msg) {
+                    for (let input of this.inputs) {
+                        // console.log(input)
+                        if (input.id == msg.id) {
+                            input.onMessage(msg);
+                            break;
+                        }
                     }
                 }
+                else {
+                    this.udp.onMessage(msg);
+                }
             }
-            else{
-                this.udp.onMessage(msg);
+            if (topic === 'teleplotjs') {
+                if ("id" in msg) {
+                    for (let input of this.inputs) {
+                        if (input.id == msg.id) {
+                            input.onMessage(msg);
+                            break;
+                        }
+                    }
+                }
+                else {
+                    this.udp.onMessage(msg);
+                }
             }
         });
         return true;
     }
 
-    disconnect(){
-        if(this.client){
+    disconnect() {
+        if (this.client) {
             this.client.unsubscribe("teleplot");
             this.client.end();
             this.client = null;
         }
     }
 
-    sendServerCommand(command){
-        if(this.client) this.client.publish("teleplot-command",JSON.stringify(command));
+    sendServerCommand(command) {
+        if (this.client) this.client.publish("teleplot-command", JSON.stringify(command));
     }
 
-    updateCMDList(){
-        for(let input of this.inputs){
+    updateCMDList() {
+        for (let input of this.inputs) {
             input.updateCMDList();
         }
     }
 
     createInput(type) {
-        if(type=="serial") {
+        if (type == "serial") {
             let serialIn = new DataInputSerial(this, "Serial");
             this.inputs.push(serialIn);
         }
