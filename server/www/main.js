@@ -17,22 +17,24 @@ if (vscode) {
     app.connections.push(conn);
 }
 else {
-    if (use_mqtt) {
+
+    // Parse url params
+    let params = new URLSearchParams(window.location.search);
+
+    if (params.has("mqtt")) {
         let conn = new ConnectionTeleplotMQTT();
         let addr = "mqtt-test.mah.priv.at"; // window.location.hostname;
         let port = 1443; // window.location.port;
         conn.connect(addr, port);
         app.connections.push(conn);
-    } else {
+    } 
+    if (params.has("tpws")) {
         let conn = new ConnectionTeleplotWebsocket();
         let addr = window.location.hostname;
         let port = window.location.port;
         conn.connect(addr, port);
         app.connections.push(conn);
     }
-
-    // Parse url params
-    let params = new URLSearchParams(window.location.search);
 
 
     console.log(`params:`)

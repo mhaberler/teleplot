@@ -14,7 +14,7 @@ class DataInputMQTT extends DataInput{
     }
 
     onMessage(msg){
-        console.log(`DataInputMQTT onMessage ${msg}`)
+        console.log(`DataInputMQTT onMessage`, msg)
 
         if("data" in msg) {
             msg.input = this;

@@ -40,20 +40,22 @@ class ConnectionTeleplotMQTT extends Connection {
         this.client = mqtt.connect(options);
         this.client.on('error', (err) => {
             console.log(`MQTT Connection error: ${err}`)
-            this.client.end()
+            // this.client.end()
         })
 
         this.client.on('reconnect', () => {
-            notyf.success('MQTT Reconnecting...');
+            console.log('MQTT Reconnecting...');
+            // FIXME resubscribe?
         })
+
         this.client.on('connect', () => {
             console.log('MQTT client connected: ' + this.client_id);
-            this.client.subscribe("teleplot");
-            this.client.subscribe("teleplotjs");
+            this.client.subscribe("teleplot/#");
             this.udp.connected = true;
             this.connected = true;
             this.sendServerCommand({ cmd: "listSerialPorts" });
         });
+        
         this.client.on('close', () => {
             this.udp.connected = false;
             this.connected = false;
@@ -68,6 +70,12 @@ class ConnectionTeleplotMQTT extends Connection {
         //             client.send(JSON.stringify({data: groupedUpPacket, fromSerial:false, timestamp: new Date().getTime()}), { binary: false });
 
         this.client.on('message', (topic, message, packet) => {
+            if (message[0] != '{') { q
+                this.udp.onMessage({data: message.toString()});
+                return;
+            }
+            console.log(`got: ${topic}  ${message.toString()} `)
+
             let msg = JSON.parse(message.toString());
             if (topic === 'teleplot') {
                 if ("id" in msg) {
@@ -83,7 +91,7 @@ class ConnectionTeleplotMQTT extends Connection {
                     this.udp.onMessage(msg);
                 }
             }
-            if (topic === 'teleplotjs') {
+            if (topic === 'teleplot/udp') {
                 if ("id" in msg) {
                     for (let input of this.inputs) {
                         if (input.id == msg.id) {
